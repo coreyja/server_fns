@@ -10,15 +10,35 @@ use request::Req;
 use response::Res;
 
 #[async_trait]
-trait ServerFn<RequestBody, ResponseBody, Request, Response, IntoReq, IntoResp>
-where
+trait ServerFn<
+    RequestBody,
+    ResponseBody,
+    Request,
+    Response,
+    IntoReq,
+    IntoResp,
+    IntoReqBody,
+    IntoRespBody,
+> where
     Response: Res<ResponseBody> + Send + 'static,
     Request: Req<RequestBody> + Send + 'static,
     RequestBody: Send + Sync,
     ResponseBody: Send + Sync,
-    IntoReq: Req<String> + Send,
-    IntoResp: Res<String> + Send,
-    Self: Codec<RequestBody, ResponseBody, Request, Response, Self::Encoding, IntoReq, IntoResp>,
+    IntoReqBody: Send + Sync,
+    IntoRespBody: Send + Sync,
+    IntoReq: Req<IntoReqBody> + Send,
+    IntoResp: Res<IntoRespBody> + Send,
+    Self: Codec<
+        RequestBody,
+        ResponseBody,
+        Request,
+        Response,
+        Self::Encoding,
+        IntoReq,
+        IntoResp,
+        IntoReqBody,
+        IntoRespBody,
+    >,
 {
     type Request;
     type Response;
@@ -31,6 +51,8 @@ where
         Self::Encoding,
         IntoReq,
         IntoResp,
+        IntoReqBody,
+        IntoRespBody,
     >;
 
     // the body of the fn

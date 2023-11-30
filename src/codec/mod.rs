@@ -16,15 +16,26 @@ pub trait Encoding {
 }
 
 #[async_trait]
-pub trait Codec<RequestBody, ResponseBody, Request, Response, Enc, IntoReq, IntoResp>
-where
+pub trait Codec<
+    RequestBody,
+    ResponseBody,
+    Request,
+    Response,
+    Enc,
+    IntoReq,
+    IntoResp,
+    IntoReqBody,
+    IntoRespBody,
+> where
     Enc: Encoding,
     Request: Req<RequestBody> + Send,
     Response: Res<ResponseBody> + Send,
     RequestBody: Sync,
     ResponseBody: Sync,
-    IntoReq: Req<String> + Send,
-    IntoResp: Res<String> + Send,
+    IntoReqBody: Sync,
+    IntoRespBody: Sync,
+    IntoReq: Req<IntoReqBody> + Send,
+    IntoResp: Res<IntoRespBody> + Send,
     Self: Sized,
 {
     async fn from_req(req: Request) -> Result<Self, ServerFnError>;

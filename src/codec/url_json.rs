@@ -24,6 +24,8 @@ impl<T, RequestBody, ResponseBody>
         GetUrlJson,
         http::Request<String>,
         http::Response<String>,
+        String,
+        String,
     > for T
 where
     T: DeserializeOwned + Serialize + Send,
